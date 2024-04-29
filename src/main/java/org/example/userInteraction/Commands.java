@@ -1,62 +1,39 @@
 package org.example.userInteraction;
 
+import org.example.gameState.State;
+
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Commands {
     private Scanner scanner = new Scanner(System.in);
     private String name;
     private String[] commands;
+    private State state;
 
-    public String getName() {
-        return name;
+    public Commands(State state) {
+        this.state = state;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String[] getCommands() {
-        return commands;
-    }
-
-    public void setCommands(String[] commands) {
-        this.commands = commands;
-    }
-
-    public void printGreeting() {
-        System.out.println(String.format("Welcome to the %s commands", name));
-    }
-
-    public void printCommands() {
-        if (commands == null || commands.length == 0) {
-            System.out.println("No current commands set");
-        } else {
-            System.out.println("Please select an option");
-            for (int i = 0; i < commands.length; i++) {
-                System.out.printf("%s: %s\n", i, commands[i]);
-            }
-            getIntegerInput();
+    public char getCharInput() {
+        String userInput;
+        char choice = ' ';
+        userInput = scanner.nextLine().toLowerCase();
+        boolean validChoice = isValidInput(userInput);
+        if (validChoice) {
+            choice = userInput.charAt(0);
         }
-    }
-
-    private int getIntegerInput() {
-        int choice = -1;
-        while (choice >= commands.length || choice < 0) {
-            try {
-                choice = scanner.nextInt();
-            } catch (Exception e) {
-                choice = -1;
-            }
-            scanner.nextLine();
-            if (choice >= commands.length || choice < 0) {
-                System.out.println("This is not valid choice, please try again");
-            }
-        }
-        System.out.println("you chose: " + commands[choice]);
         return choice;
     }
 
-    public void getStringInput() {
+    private boolean isValidInput(String userInput) {
+        boolean isValid = false;
+        if (userInput.length() != 1 || !Character.isLetter(userInput.charAt(0))) {
+            System.out.println("This is not valid choice, please try again");
+        } else {
+            isValid = true;
+        }
 
+        return isValid;
     }
 }
