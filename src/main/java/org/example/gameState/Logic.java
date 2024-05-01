@@ -4,6 +4,7 @@ import org.example.userInteraction.Display;
 import org.example.userInteraction.Commands;
 
 import java.util.HashSet;
+import java.util.Random;
 
 // Logic will have methods which allow interaction with the game
 // e.g. `.makeGuess(char guess)` `.gameStart()` `.restart()`
@@ -11,7 +12,7 @@ public class Logic {
     private boolean gameOver = false;
     private int livesLeft = 3;
     Display display = new Display();
-    State state = new State();
+    State state;
     Commands commands = new Commands(state);
     String[] allWords = new String[]{
             "television",
@@ -36,21 +37,27 @@ public class Logic {
             "designer"
     };
 
+    public Logic() {
+        Random random = new Random();
+        int randomInt = random.nextInt(allWords.length);
+        this.state = new State(allWords[randomInt]);
+    }
+
     public void startGame() {
         while (!gameOver) {
             // show disguised word
-            display.displayHangedMan(state.getGameWord(), state.getGuesses());
+            display.displayHangedMan(state.getGameWord(), state.getGuesses(), livesLeft);
             // ask for guess
             char guess = commands.getCharInput();
             // validate guess
             boolean validGuess = guess != ' ';
             if (!validGuess) {
-                System.out.println("You lost a life");
+                System.out.println("You lost a life, " + (livesLeft - 1) + " lives left");
                 livesLeft--;
             } else {
                 boolean successfulGuess = state.addToGuessSet(guess);
                 if (!successfulGuess) {
-                    System.out.println("You lost a life");
+                    System.out.println("You lost a life, " + (livesLeft -1 ) + " lives left");
                     livesLeft--;
                 }
             }
@@ -59,6 +66,7 @@ public class Logic {
             gameOver = gameOver || isWordGuessed(state.getGameWord(), state.getGuesses());
         }
 
+        display.displayHangedMan(state.getGameWord(), state.getGuesses(), livesLeft);
     }
 
     private boolean isWordGuessed(String gameWord, HashSet<Character> guesses) {

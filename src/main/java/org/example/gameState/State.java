@@ -6,7 +6,11 @@ import java.util.HashSet;
 // State will have methods for saving and retrieving information relevant to the game
 public class State {
     private HashSet<Character> guesses = new HashSet<>();
-    private String gameWord = "borrowed";
+    private String gameWord;
+
+    public State(String gameWord) {
+        this.gameWord = gameWord;
+    }
 
     public boolean addToGuessSet(char character) {
         if (gameWord.indexOf(character) != -1) {
